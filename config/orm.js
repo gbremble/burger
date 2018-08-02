@@ -1,39 +1,108 @@
-var connection = require('./connection.js');
+// Import MySQL connection.
+var connection = require("../config/connection.js");
 
-var orm = {
-    selectAll: function (callback) {
-        // ORM query to select all burgers from the database
-        var queryString = 'SELECT * FROM burgers';
+// Helper function for SQL syntax.
+// Let's say we want to pass 3 values into the mySQL query.
+// In order to write the query, we need 3 question marks.
+// The above helper function loops through and creates an array of question marks - ["?", "?", "?"] - and turns it into a string.
+// ["?", "?", "?"].toString() => "?,?,?";
+function printQuestionMarks(num) {
+  var arr = [];
 
-        connection.query(queryString, function(error, result) {
-            if (error) throw error;
-            
-            // Callback: here's the result
-            callback(result);
-        });
-    },
-    insertOne: function (burgerName, callback) {
-        // ORM to add a new burger to the database
-        var queryString = 'INSERT INTO burgers (burger_name, devoured) VALUES (?, false);'
+  for (var i = 0; i < num; i++) {
+    arr.push("?");
+  }
 
-        connection.query(queryString, burgerName, function(error, result) {
-            if (error) throw error;
-
-            // Callback: here's the result
-            callback(result);
-        });
-    },
-    updateOne: function (burgerName, devoured, callback) {
-        // ORM to update just one burger from the database
-        var queryString = 'UPDATE burgers SET devoured TO true WHERE burger_name' /* TODO */;
-
-        connection.query(queryString, [burgerName, devoured], function (error, result) {
-            if (error) throw error;
-
-            // Callback: here's the result
-            callback(result);
-        })
-    }
+  return arr.toString();
 }
+
+// Helper function to convert object key/value pairs to SQL syntax
+function objToSql(ob) {
+  var arr = [];
+
+  // loop through the keys and push the key/value as a string int arr
+  for (var key in ob) {
+    var value = ob[key];
+    // check to skip hidden properties
+    if (Object.hasOwnProperty.call(ob, key)) {
+      // if string with spaces, add quotations (Lana Del Grey => 'Lana Del Grey')
+      if (typeof value === "string" && value.indexOf(" ") >= 0) {
+        value = "'" + value + "'";
+      }
+      // e.g. {name: 'Lana Del Grey'} => ["name='Lana Del Grey'"]
+      // e.g. {sleepy: true} => ["sleepy=true"]
+      arr.push(key + "=" + value);
+    }
+  }
+
+  // translate array of strings to a single comma-separated string
+  return arr.toString();
+}
+
+// Object for all our SQL statement functions.
+var orm = {
+  all: function(tableInput, callback) {
+    var queryString = "SELECT * FROM " + tableInput + ";";
+    connection.query(queryString, function(err, result) {
+      if (err) {
+        throw err;
+      }
+      callback(result);
+    });
+  },
+  create: function(table, cols, vals, callback) {
+    var queryString = "INSERT INTO " + table;
+
+    queryString += " (";
+    queryString += cols.toString();
+    queryString += ") ";
+    queryString += "VALUES (";
+    queryString += printQuestionMarks(vals.length);
+    queryString += ") ";
+
+    console.log(queryString);
+
+    connection.query(queryString, vals, function(err, result) {
+      if (err) {
+        throw err;
+      }
+
+      callback(result);
+    });
+  },
+  // An example of objColVals would be {name: panther, sleepy: true}
+  update: function(table, objColVals, condition, callback) {
+    var queryString = "UPDATE " + table;
+
+    queryString += " SET ";
+    queryString += objToSql(objColVals);
+    queryString += " WHERE ";
+    queryString += condition;
+
+    console.log(queryString);
+    connection.query(queryString, function(err, result) {
+      if (err) {
+        throw err;
+      }
+
+      callback(result);
+    });
+  },
+  delete: function(table, condition, callback) {
+    var queryString = "DELETE FROM " + table;
+    queryString += " WHERE ";
+    queryString += condition;
+
+    connection.query(queryString, function(err, result) {
+      if (err) {
+        throw err;
+      }
+
+      callback(result);
+    });
+  }
+};
+
+// export the ORM for the model
 
 module.exports = orm;
