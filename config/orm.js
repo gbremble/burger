@@ -25,7 +25,7 @@ var orm = {
     },
     updateOne: function (burgerName, devoured, callback) {
         // ORM to update just one burger from the database
-        var queryString = 'UPDATE burgers SET (burger_name, devoured) TO (?,?) WHERE ';
+        var queryString = 'UPDATE burgers SET devoured TO true WHERE burger_name' /* TODO */;
 
         connection.query(queryString, [burgerName, devoured], function (error, result) {
             if (error) throw error;
