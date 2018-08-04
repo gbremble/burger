@@ -1,0 +1,9 @@
+<li>
+	{{name}}
+
+	<button type="button" class="btn btn-secondary devour-burger" data-id="{{id}}" data-newsleep="{{devoured}}">
+		{{#if devoured}}Add To Plate{{else}}Eat This Burger{{/if}}
+	</button>
+
+	<button type="button" class="btn btn-danger delete-burger" data-id="{{this.id}}">Throw Out</button>
+</li>
