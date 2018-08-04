@@ -1,0 +1,50 @@
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="jumbotron">
+                <h1 class="display-4">Eat a Burger</h1>
+                <p class="lead">Living vicariously through calorie-free digital burgers.</p>
+                <hr class="my-4">
+                <p>It uses Handlebars as the view engine, Express for routing, and has an ORM
+                    to structure database queries.</p>
+                <a class="btn btn-primary btn-lg" href="https://github.com/gbremble/burger" role="button">Learn More</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <h3>Burgers On Your Plate</h3>
+            <ul>
+                {{#each burgers}}
+                    {{#unless devoured}}
+                        {{> burgers/burger-block devoured=false}}
+                    {{/unless}}
+                {{/each}}
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <h3>Burgers In Your Stomach</h3>
+            <ul>
+                {{#each burgers}}
+                    {{#if devoured}}
+                        {{> burgers/burger-block devoured=true}}
+                    {{/if}}
+                {{/each}}
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <h3>Add a Burger To Your Plate</h3>
+            <form>
+                <div class="form-group">
+                    <label for="burgerName">Name of Burger</label>
+                    <input type="email" class="form-control" id="burgerName" placeholder="Every great burger needs a good name (for marketing purposes).">
+                </div>
+                <button type="submit" class="btn btn-primary">Add Burger</button>
+            </form>
+        </div>
+    </div>
+</div>
