@@ -61,16 +61,3 @@ router.delete('/api/burgers/:id', function (req, res) {
 
 // ### EXPORT ### Export the routes for server.js
 module.exports = router;
-
-
-
-// // Create all our routes and set up logic within those routes where required.
-// router.get("/", function(req, res) {
-//   cat.all(function(data) {
-//     var hbsObject = {
-//       cats: data
-//     };
-//     console.log(hbsObject);
-//     res.render("index", hbsObject);
-//   });
-// });
